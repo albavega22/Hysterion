@@ -263,7 +263,7 @@ for (i in 1:n_blocks_sons) {
   end <- min(i * block_size_sons, length(paragraphs_sons))
   block <- paragraphs_sons[start:end]
 
-  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+  message("🔄 Procesando bloque ", i, " de ", n_blocks_sons)
 
   result <- lapply(block, function(p) {
     Sys.sleep(1.5)  # pausa para evitar timeout
@@ -287,7 +287,7 @@ for (i in 1:n_blocks_sun) {
   end <- min(i * block_size_sun, length(paragraphs_sun))
   block <- paragraphs_sun[start:end]
 
-  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+  message("🔄 Procesando bloque ", i, " de ", n_blocks_sun)
 
   result <- lapply(block, function(p) {
     Sys.sleep(1.5)  # pausa para evitar timeout
@@ -311,7 +311,7 @@ for (i in 1:n_blocks_sound) {
   end <- min(i * block_size_sound, length(paragraphs_sound))
   block <- paragraphs_sound[start:end]
 
-  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+  message("🔄 Procesando bloque ", i, " de ", n_blocks_sound)
 
   result <- lapply(block, function(p) {
     Sys.sleep(1.5)  # pausa para evitar timeout
