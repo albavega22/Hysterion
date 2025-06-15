@@ -219,30 +219,30 @@ paragraphs_sound <- paragraphs_sound[nchar(paragraphs_sound) < 1000]
 # Load the results
 
 # The Bell Jar
-results_general_belljar <- readRDS("results_general_belljar.rds")
+results_bert_belljar <- readRDS("results_bert_belljar.rds")
 
 #To the Lighthouse
-results_general_lighthouse <- readRDS("results_general_lighthouse.rds")
+results_bert_lighthouse <- readRDS("results_bert_lighthouse.rds")
 
 #The Yellow Wallpaper
-results_general_yellow <- readRDS("results_general_yellow.rds")
+results_bert_yellow <- readRDS("results_bert_yellow.rds")
 
 # Sons and Lovers
-results_general_sons <- readRDS("results_general_son.rds")
+results_bert_sons <- readRDS("results_bert_son.rds")
 
 #The sun also rises
-results_general_sun <- readRDS("results_general_sun.rds")
+results_bert_sun <- readRDS("results_bert_sun.rds")
 
 # The sound of the fury
-results_general_sound <- readRDS("results_general_sound.rds")
+results_bert_sound <- readRDS("results_bert_sound.rds")
 
 
 
 # Clean the results
 
 # The Bell Jar
-processing_belljar_general <- lapply(seq_along(results_general_belljar), function(i) {
-  res <- results_general_belljar[[i]]
+processing_belljar_bert <- lapply(seq_along(results_bert_belljar), function(i) {
+  res <- results_bert_belljar[[i]]
   if (!is.null(res)) {
     data.frame(
       paragraph = i,
@@ -253,8 +253,8 @@ processing_belljar_general <- lapply(seq_along(results_general_belljar), functio
 }) |> bind_rows()
 
 # The Yellow Wallpaper
-processing_wallpaper_general <- lapply(seq_along(results_general_yellow), function(i) {
-  res <- results_general_yellow[[i]]
+processing_wallpaper_bert <- lapply(seq_along(results_bert_yellow), function(i) {
+  res <- results_bert_yellow[[i]]
   
   if (!is.null(res) && is.list(res) && all(c("label", "score") %in% names(res[[1]]))) {
     data.frame(
@@ -268,8 +268,8 @@ processing_wallpaper_general <- lapply(seq_along(results_general_yellow), functi
 }) |> bind_rows()
 
 # To the Lighthouse
-processing_lighthouse_general <- lapply(seq_along(results_general_lighthouse), function(i) {
-  res <- results_general_lighthouse[[i]]
+processing_lighthouse_bert <- lapply(seq_along(results_bert_lighthouse), function(i) {
+  res <- results_bert_lighthouse[[i]]
   
   if (!is.null(res) && nrow(res) > 0) {
     data.frame(
@@ -283,7 +283,7 @@ processing_lighthouse_general <- lapply(seq_along(results_general_lighthouse), f
 }) |> bind_rows()
 
 # Sons and Lovers
-processing_general_sons <- lapply(seq_along(block_results_sons), function(block_index) {
+processing_bert_sons <- lapply(seq_along(block_results_sons), function(block_index) {
   block <- block_results_sons[[block_index]]
   
   if (!is.null(block) && length(block) > 0) {
@@ -307,7 +307,7 @@ processing_general_sons <- lapply(seq_along(block_results_sons), function(block_
 }) |> unlist(recursive = FALSE) |> bind_rows()
 
 # The sun also rises
-processing_general_sun <- map2_dfr(
+processing_bert_sun <- map2_dfr(
   block_results_sun,
   seq_along(block_results_sun),
   function(block, block_index) {
@@ -340,7 +340,7 @@ processing_general_sun <- map2_dfr(
 )
 
 # The sound and the fury
-processing_general_sound <- map2_dfr(
+processing_bert_sound <- map2_dfr(
   block_results_sound,
   seq_along(block_results_sound),
   function(block, block_index) {
@@ -375,7 +375,7 @@ processing_general_sound <- map2_dfr(
 
 
 # Graph - The Bell Jar
-emotion_counts_belljar <- processing_belljar_general %>%
+emotion_counts_belljar <- processing_belljar_bert %>%
   count(emotion, name = "n")
 
 
@@ -398,7 +398,7 @@ ggplot(emotion_counts_belljar, aes(x = reorder(emotion, proportion), y = proport
 
 # Graph - The Yellow Wallpaper
 
-emotion_counts_yellow <- processing_wallpaper_general %>%
+emotion_counts_yellow <- processing_wallpaper_bert %>%
   count(emotion, name = "n")
 
 
@@ -419,7 +419,7 @@ ggplot(emotion_counts_yellow, aes(x = reorder(emotion, proportion), y = proporti
 
 
 # Graph - To the Lighthouse
-emotion_counts_lighthouse <- processing_lighthouse_general %>%
+emotion_counts_lighthouse <- processing_lighthouse_bert %>%
   count(emotion, name = "n")
 
 total_emotions <- sum(emotion_counts_lighthouse$n)
@@ -441,7 +441,7 @@ ggplot(emotion_counts_lighthouse, aes(x = reorder(emotion, proportion), y = prop
 
 
 # Graph - Sons and Lovers
-emotion_counts_sons <- processing_general_sons %>%
+emotion_counts_sons <- processing_bert_sons %>%
   count(emotion, name = "n") %>%
   mutate(proportion = n / sum(n))
 
@@ -457,7 +457,7 @@ ggplot(emotion_counts_sons, aes(x = reorder(emotion, proportion), y = proportion
 
 
 # Graph - The sun also rises
-emotion_counts_sun <- processing_general_sun %>%
+emotion_counts_sun <- processing_bert_sun %>%
   count(emotion, name = "n") %>%
   mutate(proportion = n / sum(n))
 
@@ -473,7 +473,7 @@ ggplot(emotion_counts_sun, aes(x = reorder(emotion, proportion), y = proportion,
 
 
 # Graph - The sound and the fury
-emotion_counts_sound <- processing_general_sound %>%
+emotion_counts_sound <- processing_bert_sound %>%
   count(emotion, name = "n") %>%
   mutate(proportion = n / sum(n))
 
