@@ -134,6 +134,11 @@ sentiments_yellow_wallpaper |>
 
 
 # The Hugging Face
+# You must create a function called api_token with your own token to The Hugging Face
+api_token <- "introduce_your_token_here"
+
+# Then, load the model BERT:
+model_general <- "bhadresh-savani/bert-base-uncased-emotion"
 
 ## General emotions
 # Create a function to analyze emotions in a given text using a Hugging Face model
@@ -253,7 +258,7 @@ results_bert_lighthouse <- lapply(paragraphs_lighthouse, function(p) {
 block_size_sons <- 102
 n_blocks_sons <- ceiling(length(paragraphs_sons) / block_size_sons)
 
-for (i in 1:n_blocks_sona) {
+for (i in 1:n_blocks_sons) {
   start <- (i - 1) * block_size_sons + 1
   end <- min(i * block_size_sons, length(paragraphs_sons))
   block <- paragraphs_sons[start:end]
@@ -361,7 +366,7 @@ results_bert_lighthouse <- readRDS("results_bert_lighthouse.rds")
 results_bert_yellow <- readRDS("results_bert_yellow.rds")
 
 # Sons and Lovers
-results_bert_sons <- readRDS("results_bert_son.rds")
+results_bert_sons <- readRDS("results_bert_sons.rds")
 
 #The sun also rises
 results_bert_sun <- readRDS("results_bert_sun.rds")
@@ -719,7 +724,7 @@ for (i in 1:total_blocks_fury) {
         
 # And then save the results:
 # The Bell Jar
-saveRDS(results_emoroberta_lighthouse, "results_emoroberta_lighthouse.rds")
+saveRDS(results_emoroberta_belljar, "results_emoroberta_belljar.rds")
 
 # The Yellow Wallpaper
 saveRDS(results_emoroberta_yellow, "results_emoroberta_yellow.rds")
