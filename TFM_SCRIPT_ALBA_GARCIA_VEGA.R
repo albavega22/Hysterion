@@ -620,8 +620,13 @@ ggplot(emotion_counts_sound, aes(x = reorder(emotion, proportion), y = proportio
 
 
 ## Focusing on mental health: a more focused model (EmoRoBERTa)
+# Again, you may apply the following function:
 
-# Load the results
+# As this!
+
+# And then save the results:
+
+# Or you may directly load the results
 
 # The Bell Jar
 results_mental_health_belljar <- readRDS("results_emoroberta_belljar.rds")
