@@ -21,6 +21,7 @@ library(tibble)
 library(sentimentr)
 
 # Load and process the texts
+# Make sure to have saved the .txt files that can be found in the repository
 
 # To the lighthouse
 tothelighthouse_vw <- readLines("to-the-lighthouse.txt", encoding = "UTF-8")
@@ -67,7 +68,7 @@ preprocess_text <- function(text) {
 }
 
 
-# Apply
+# Apply the function to each of the books
 
 tokens_lighthouse <- preprocess_text(tothelighthouse_vw)
 tokens_yellowwallpaper <- preprocess_text(theyellowwallpaper)
@@ -83,18 +84,24 @@ tokens_sons_lovers <- preprocess_text(sons_lovers)
 
 # The Bell Jar - Sylvia Plath
 
+# Load the NRC sentiment lexicon (includes emotions like anger, fear, joy, etc.)
 nrc <- get_sentiments("nrc")
 
+# Join tokenized words from the book with the NRC sentiment lexicon, 
+# keeping only the emotion-related sentiments (excluding "positive" and "negative")
 sentiments_belljar <- tokens_belljar |> 
   inner_join(nrc, by = "word") |> 
   filter(!sentiment %in% c("positive", "negative"))
 
+# Count the frequency of each sentiment and visualize them in a horizontal bar plot
 sentiments_belljar |> 
   count(sentiment, sort = TRUE) |> 
   ggplot(aes(x = reorder(sentiment, n), y = n, fill = sentiment)) +
-  geom_col(show.legend = FALSE) +
-  coord_flip() +
-  labs(title = "Sentimientos en The Bell Jar", x = "Sentimiento", y = "Frecuencia")
+  geom_col(show.legend = FALSE) +                       # Bar chart without legend
+  coord_flip() +                                        # Flip axes for horizontal bars
+  labs(title = "Sentiments in *The Bell Jar*",         # Plot title
+       x = "Sentiment",                                 # X-axis label
+       y = "Frequency")    
 
 
 
@@ -129,51 +136,61 @@ sentiments_yellow_wallpaper |>
 # The Hugging Face
 
 ## General emotions
-
-# Create function
+# Create a function to analyze emotions in a given text using a Hugging Face model
 analize_emotion <- function(text, model, token) {
+  
+  # Build the API endpoint URL based on the selected model
   url <- paste0("https://api-inference.huggingface.co/models/", model)
   
+  # Send a POST request to the Hugging Face Inference API
   answer <- tryCatch({
     POST(
       url,
-      add_headers(Authorization = paste("Bearer", token)),
-      body = list(inputs = text),
-      encode = "json",
-      timeout(60)
+      add_headers(Authorization = paste("Bearer", token)),  # Add the authorization token
+      body = list(inputs = text),                            # Send the input text as JSON
+      encode = "json",                                       # Encode the request as JSON
+      timeout(60)                                            # Set a 60-second timeout, you may increase or decrease this timeout
     )
   }, error = function(e) {
-    message("❌ Error en la solicitud: ", e$message)
-    return(NULL)
+    message("❌ Request error: ", e$message)                 # Print error message if request fails
+    return(NULL)                                             # Return NULL on error
   })
   
+  # If a valid response is received and status code is 200 (OK)
   if (!is.null(answer) && status_code(answer) == 200) {
-    # Forzar texto para evitar problemas de parsers automáticos
+    
+    # Extract response content as text (avoiding automatic parser issues)
     result_text <- content(answer, as = "text", encoding = "UTF-8")
     
-    # Intentar convertir a JSON
+    # Try to parse the text content as JSON for future processing and graphing
     parsed <- tryCatch(fromJSON(result_text), error = function(e) {
-      message("⚠️ No se pudo convertir la respuesta a JSON.")
+      message("⚠️ Failed to parse JSON response.")          # Notify if parsing fails
       return(NULL)
     })
     
-    return(parsed)
+    return(parsed)                                           # Return the parsed JSON object
     
   } else {
-    message("⚠️ Error en la respuesta: Código ", status_code(answer))
+    # Print a warning message if the response status is not 200
+    message("⚠️ Response error: Status code ", status_code(answer))
     return(NULL)
   }
 }
 
 
-# Filter out short or empty paragraphs, or those that will give us problem
 
+# Filter out short or empty paragraphs, or those that will give us problem
 # The Bell Jar
+# Split the full text of The Bell Jar into paragraphs using periods followed by whitespace as delimiters
 paragraphs_belljar <- unlist(strsplit(thebelljar, split = "\\.\\s+"))
+# Keep only paragraphs longer than 30 characters to filter out short or irrelevant ones
 paragraphs_belljar <- paragraphs_belljar[nchar(paragraphs_belljar) > 30]
+# Remove empty or NA paragraphs
 paragraphs_belljar <- paragraphs_belljar[!is.na(paragraphs_belljar) & paragraphs_belljar != ""]
+# Optionally, remove very long paragraphs (e.g., longer than 600 characters) to simplify processing
 paragraphs_belljar <- paragraphs_belljar[nchar(paragraphs_belljar) < 600]
 
+# The same will be done for the rest of the books!
 # The Yellow Wallpaper
 yellowwallpaper <- tolower(read_file("the_yellow_wallpaper.txt"))
 paragraphs_yellow <- unlist(strsplit(yellowwallpaper, split = "\\.\\s+"))
@@ -213,10 +230,126 @@ paragraphs_sound <- paragraphs_sound[!is.na(paragraphs_sound) & paragraphs_sound
 paragraphs_sound <- paragraphs_sound[nchar(paragraphs_sound) < 1000]
 
 
-# Añadir todas las aplicaciones de la función en formato de no ejecutar el chunk
+# You may apply the function to each of the books...
+# The Bell Jar
+results_bert_belljar <- lapply(paragraphs_belljar, function(p) {
+  Sys.sleep(1)  # Espera de 1 seg entre llamadas
+  analize_emotion(p, model_general, api_token)
+})
 
+# The Yellow Wallpaper
+results_bert_yellow <- lapply(paragraphs_yellow, function(p) {
+  Sys.sleep(1)
+  analize_emotion(p, model_general, api_token)
+})
 
-# Load the results
+# To the Lighthouse
+results_bert_lighthouse <- lapply(paragraphs_lighthouse, function(p) {
+  Sys.sleep(1)
+  analize_emotion(p, model_general, api_token)
+})
+
+# Sons and Lovers
+block_size_sons <- 102
+n_blocks_sons <- ceiling(length(paragraphs_sons) / block_size_sons)
+
+for (i in 1:n_blocks_sona) {
+  start <- (i - 1) * block_size_sons + 1
+  end <- min(i * block_size_sons, length(paragraphs_sons))
+  block <- paragraphs_sons[start:end]
+
+  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+
+  result <- lapply(block, function(p) {
+    Sys.sleep(1.5)  # pausa para evitar timeout
+    tryCatch({
+      analize_emotion(p, model_general, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+
+  saveRDS(result, paste0("results_sons_block_", i, ".rds"))
+}
+
+# The sun also rises
+block_size_sun <- 81
+n_blocks_sun <- ceiling(length(paragraphs_sun) / block_size_sun)
+
+for (i in 1:n_blocks_sun) {
+  start <- (i - 1) * block_size_sun + 1
+  end <- min(i * block_size_sun, length(paragraphs_sun))
+  block <- paragraphs_sun[start:end]
+
+  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+
+  result <- lapply(block, function(p) {
+    Sys.sleep(1.5)  # pausa para evitar timeout
+    tryCatch({
+      analize_emotion(p, model_general, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+
+  saveRDS(result, paste0("results_sun_block_", i, ".rds"))
+}
+
+# The Sound and the Fury
+block_size_sound <- 48
+n_blocks_sound <- ceiling(length(paragraphs_sound) / block_size_sound)
+
+for (i in 1:n_blocks_sound) {
+  start <- (i - 1) * block_size_sound + 1
+  end <- min(i * block_size_sound, length(paragraphs_sound))
+  block <- paragraphs_sound[start:end]
+
+  message("🔄 Procesando bloque ", i, " de ", n_blocks)
+
+  result <- lapply(block, function(p) {
+    Sys.sleep(1.5)  # pausa para evitar timeout
+    tryCatch({
+      analize_emotion(p, model_general, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+
+  saveRDS(result, paste0("results_sound_block_", i, ".rds"))
+}
+
+#... and then save the results...
+# The Bell Jar
+saveRDS(results_bert_belljar, "results_bert_belljar.rds")
+
+# The Yellow Wallpaper
+saveRDS(results_bert_yellow, "results_bert_yellow.rds")
+
+# To the Lighthouse
+saveRDS(results_bert_lighthouse, "results_bert_lighthouse.rds")
+
+# Sons and Lovers
+block_numbers_sons <- 1:102
+file_names_sons <- paste0("results_sons_block_", block_numbers_sons, ".rds")
+
+results_bert_sons <- lapply(file_names_sons, readRDS)
+
+# The sun also rises
+block_numbers_sun <- 1:81
+file_names_sun <- paste0("results_sun_block_", block_numbers_sun, ".rds")
+
+results_bert_sun <- lapply(file_names_sun, readRDS)
+
+# The sound and the fury
+block_numbers_sound <- 1:48
+file_names_sound <- paste0("results_sound_block_", block_numbers_sound, ".rds")
+
+results_bert_sound <- lapply(file_names_sound, readRDS)
+
+# ... or you may directly load the results!
 
 # The Bell Jar
 results_bert_belljar <- readRDS("results_bert_belljar.rds")
@@ -235,7 +368,6 @@ results_bert_sun <- readRDS("results_bert_sun.rds")
 
 # The sound of the fury
 results_bert_sound <- readRDS("results_bert_sound.rds")
-
 
 
 # Clean the results
