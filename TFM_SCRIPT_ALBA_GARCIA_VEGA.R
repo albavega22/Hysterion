@@ -493,28 +493,28 @@ ggplot(emotion_counts_sound, aes(x = reorder(emotion, proportion), y = proportio
 # Load the results
 
 # The Bell Jar
-results_mental_health_belljar <- readRDS("results_anxiety_belljar.rds")
+results_mental_health_belljar <- readRDS("results_emoroberta_belljar.rds")
 
 # The Yellow Wallpaper
-results_mental_health_wallpaper <- readRDS("results_anxiety_yellow.rds")
+results_mental_health_wallpaper <- readRDS("results_emoroberta_yellow.rds")
 
 # To the Lighthouse
-results_mental_health_lighthouse <- readRDS("results_anxiety_lighthouse.rds")
+results_mental_health_lighthouse <- readRDS("results_emoroberta_lighthouse.rds")
 
 # Sons and Lovers
-block_numbers_sons_depression <- 1:204
-file_names_sons_depression <- paste0("results_depression_sons_block_", block_numbers_sons_depression, ".rds")
-block_results_sons_depression <- lapply(file_names_sons_depression, readRDS)
+block_numbers_sons_emoroberta <- 1:204
+file_names_sons_emoroberta <- paste0("results_emoroberta_sons_block_", block_numbers_sons_emoroberta, ".rds")
+block_results_sons_emoroberta <- lapply(file_names_sons_emoroberta, readRDS)
 
 # The sun also rises
-block_numbers_sun_depression <- 1:81
-file_names_sun_depression <- paste0("results_depression_sun_block_", block_numbers_sun_depression, ".rds")
-block_results_sun_depression <- lapply(file_names_sun_depression, readRDS)
+block_numbers_sun_emoroberta <- 1:81
+file_names_sun_emoroberta <- paste0("results_emoroberta_sun_block_", block_numbers_sun_emoroberta, ".rds")
+block_results_sun_emoroberta <- lapply(file_names_sun_emoroberta, readRDS)
 
 # The sound and the fury
-block_numbers_fury_depression <- 1:158
-file_names_fury_depression <- paste0("results_depression_fury_block_", block_numbers_fury_depression, ".rds")
-block_results_fury_depression <- lapply(file_names_fury_depression, readRDS)
+block_numbers_fury_emoroberta <- 1:158
+file_names_fury_emoroberta <- paste0("results_emoroberta_fury_block_", block_numbers_fury_emoroberta, ".rds")
+block_results_fury_emoroberta <- lapply(file_names_fury_emoroberta, readRDS)
 
 # Process the results
 
@@ -572,8 +572,8 @@ processing_lighthouse_mental_health <- lapply(seq_along(results_mental_health_li
 
 # Sons and Lovers
 
-processing_mental_health_sons <- lapply(seq_along(block_results_sons_depression), function(block_index) {
-  block <- block_results_sons_depression[[block_index]]
+processing_mental_health_sons <- lapply(seq_along(block_results_sons_emoroberta), function(block_index) {
+  block <- block_results_sons_emoroberta[[block_index]]
   
   if (!is.null(block) && length(block) > 0) {
     lapply(seq_along(block), function(paragraph_index) {
@@ -597,8 +597,8 @@ processing_mental_health_sons <- lapply(seq_along(block_results_sons_depression)
 
 # The sun also rises
 
-processing_mental_health_sun <- lapply(seq_along(block_results_sun_depression), function(block_index) {
-  block <- block_results_sun_depression[[block_index]]
+processing_mental_health_sun <- lapply(seq_along(block_results_sun_emoroberta), function(block_index) {
+  block <- block_results_sun_emoroberta[[block_index]]
   
   if (!is.null(block) && length(block) > 0) {
     lapply(seq_along(block), function(paragraph_index) {
@@ -621,8 +621,8 @@ processing_mental_health_sun <- lapply(seq_along(block_results_sun_depression), 
 }) |> unlist(recursive = FALSE) |> bind_rows()
 
 # The sound and the fury
-processing_mental_health_fury <- lapply(seq_along(block_results_fury_depression), function(block_index) {
-  block <- block_results_fury_depression[[block_index]]
+processing_mental_health_fury <- lapply(seq_along(block_results_fury_emoroberta), function(block_index) {
+  block <- block_results_fury_emoroberta[[block_index]]
   
   if (!is.null(block) && length(block) > 0) {
     lapply(seq_along(block), function(paragraph_index) {
@@ -725,7 +725,7 @@ ggplot(mental_health_counts_sun, aes(x = reorder(emotion, proportion), y = propo
 
 
 # Graph mental health - The sound and the fury
-mental_health_counts_fury <- processing_depression_fury %>%
+mental_health_counts_fury <- processing_emoroberta_fury %>%
   count(emotion, name = "n") %>%
   mutate(proportion = n / sum(n))
 
