@@ -283,13 +283,13 @@ processing_lighthouse_bert <- lapply(seq_along(results_bert_lighthouse), functio
 }) |> bind_rows()
 
 # Sons and Lovers
-processing_bert_sons <- lapply(seq_along(block_results_sons), function(block_index) {
-  block <- block_results_sons[[block_index]]
-  
+processing_bert_sons <- lapply(seq_along(results_bert_sons), function(block_index) {
+  block <- results_bert_sons[[block_index]]
+
   if (!is.null(block) && length(block) > 0) {
     lapply(seq_along(block), function(paragraph_index) {
       paragraph <- block[[paragraph_index]]
-      
+
       if (!is.null(paragraph) && is.list(paragraph) && all(c("label", "score") %in% names(paragraph[[1]]))) {
         data.frame(
           block = block_index,
@@ -308,11 +308,11 @@ processing_bert_sons <- lapply(seq_along(block_results_sons), function(block_ind
 
 # The sun also rises
 processing_bert_sun <- map2_dfr(
-  block_results_sun,
-  seq_along(block_results_sun),
+  results_bert_sun,
+  seq_along(results_bert_sun),
   function(block, block_index) {
     if (is.null(block) || length(block) == 0 || is.null(block[[1]])) return(NULL)
-    
+
     paragraphs <- block[[1]]  
     
     map2_dfr(
@@ -320,7 +320,7 @@ processing_bert_sun <- map2_dfr(
       seq_along(paragraphs),
       function(paragraph, paragraph_index) {
         if (is.null(paragraph) || !is.list(paragraph)) return(NULL)
-        
+
         map_dfr(paragraph, function(emotion_entry) {
           if (!is.null(emotion_entry$label) && !is.null(emotion_entry$score)) {
             data.frame(
@@ -341,19 +341,19 @@ processing_bert_sun <- map2_dfr(
 
 # The sound and the fury
 processing_bert_sound <- map2_dfr(
-  block_results_sound,
-  seq_along(block_results_sound),
+  results_bert_sound,
+  seq_along(results_bert_sound),
   function(block, block_index) {
     if (is.null(block) || length(block) == 0 || is.null(block[[1]])) return(NULL)
-    
+
     paragraphs <- block[[1]]  
-    
+
     map2_dfr(
       paragraphs,
       seq_along(paragraphs),
       function(paragraph, paragraph_index) {
         if (is.null(paragraph) || !is.list(paragraph)) return(NULL)
-        
+
         map_dfr(paragraph, function(emotion_entry) {
           if (!is.null(emotion_entry$label) && !is.null(emotion_entry$score)) {
             data.frame(
@@ -371,7 +371,6 @@ processing_bert_sound <- map2_dfr(
     )
   }
 )
-
 
 
 # Graph - The Bell Jar
