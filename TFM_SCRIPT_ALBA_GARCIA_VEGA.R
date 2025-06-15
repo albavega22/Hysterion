@@ -724,7 +724,7 @@ ggplot(mental_health_counts_sun, aes(x = reorder(emotion, proportion), y = propo
 
 
 # Graph mental health - The sound and the fury
-mental_health_counts_fury <- processing_emoroberta_fury %>%
+mental_health_counts_fury <- processing_mental_health_fury %>%
   count(emotion, name = "n") %>%
   mutate(proportion = n / sum(n))
 
