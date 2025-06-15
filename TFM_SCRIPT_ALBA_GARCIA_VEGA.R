@@ -503,17 +503,17 @@ results_mental_health_lighthouse <- readRDS("results_emoroberta_lighthouse.rds")
 
 # Sons and Lovers
 block_numbers_sons_emoroberta <- 1:204
-file_names_sons_emoroberta <- paste0("results_emoroberta_sons_block_", block_numbers_sons_emoroberta, ".rds")
+file_names_sons_emoroberta <- paste0("results_depression_sons_block_", block_numbers_sons_emoroberta, ".rds")
 block_results_sons_emoroberta <- lapply(file_names_sons_emoroberta, readRDS)
 
 # The sun also rises
 block_numbers_sun_emoroberta <- 1:81
-file_names_sun_emoroberta <- paste0("results_emoroberta_sun_block_", block_numbers_sun_emoroberta, ".rds")
+file_names_sun_emoroberta <- paste0("results_depression_sun_block_", block_numbers_sun_emoroberta, ".rds")
 block_results_sun_emoroberta <- lapply(file_names_sun_emoroberta, readRDS)
 
 # The sound and the fury
 block_numbers_fury_emoroberta <- 1:158
-file_names_fury_emoroberta <- paste0("results_emoroberta_fury_block_", block_numbers_fury_emoroberta, ".rds")
+file_names_fury_emoroberta <- paste0("results_depression_fury_block_", block_numbers_fury_emoroberta, ".rds")
 block_results_fury_emoroberta <- lapply(file_names_fury_emoroberta, readRDS)
 
 # Process the results
