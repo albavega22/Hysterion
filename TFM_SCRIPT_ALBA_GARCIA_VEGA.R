@@ -525,7 +525,7 @@ ggplot(emotion_counts_belljar, aes(x = reorder(emotion, proportion), y = proport
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of different emotions in The Bell Jar",
+    title = "Proportion of different emotions in The Bell Jar (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -547,7 +547,7 @@ ggplot(emotion_counts_yellow, aes(x = reorder(emotion, proportion), y = proporti
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of different emotions in The Yellow Wallpaper",
+    title = "Proportion of different emotions in The Yellow Wallpaper (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -568,7 +568,7 @@ ggplot(emotion_counts_lighthouse, aes(x = reorder(emotion, proportion), y = prop
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of different emotions in To the lighthouse",
+    title = "Proportion of different emotions in To the lighthouse (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -585,7 +585,7 @@ ggplot(emotion_counts_sons, aes(x = reorder(emotion, proportion), y = proportion
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of emotions in *Sons and Lovers* (BERT)",
+    title = "Proportion of emotions in Sons and Lovers (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -601,7 +601,7 @@ ggplot(emotion_counts_sun, aes(x = reorder(emotion, proportion), y = proportion,
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of emotions in *The sun also rises* (BERT)",
+    title = "Proportion of emotions in The sun also rises (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -617,7 +617,7 @@ ggplot(emotion_counts_sound, aes(x = reorder(emotion, proportion), y = proportio
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Proportion of emotions in *The sound of the fury* (BERT)",
+    title = "Proportion of emotions in The sound and the fury (BERT)",
     x = "Emotion",
     y = "Proportion"
   ) +
@@ -941,7 +941,7 @@ ggplot(mental_health_counts_sons, aes(x = reorder(emotion, proportion), y = prop
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Mental health in To the lighthouse (model EmoRoBERTa)",
+    title = "Mental health in Sons and Lovers (model EmoRoBERTa)",
     x = "Emotion",
     y = "Average score"
   ) +
@@ -959,7 +959,7 @@ ggplot(mental_health_counts_sun, aes(x = reorder(emotion, proportion), y = propo
   geom_col(show.legend = FALSE) +
   coord_flip() +
   labs(
-    title = "Mental health in To the lighthouse (model EmoRoBERTa)",
+    title = "Mental health in The sun also rises (model EmoRoBERTa)",
     x = "Emotion",
     y = "Average score"
   ) +
