@@ -620,13 +620,114 @@ ggplot(emotion_counts_sound, aes(x = reorder(emotion, proportion), y = proportio
 
 
 ## Focusing on mental health: a more focused model (EmoRoBERTa)
-# Again, you may apply the following function:
+# Again, you may apply the same funcition, but changing the model:
+model_mental_health <- "SamLowe/roberta-base-go_emotions"
 
 # As this!
+# The Bell Jar
+results_emoroberta_belljar <- lapply(paragraphs_belljar, function(p) {
+  Sys.sleep(1)
+  analize_emotion(p, model_mental_health, api_token)
+})
+        
+# The Yellow Wallpaper
+results_emoroberta_yellow <- lapply(paragraphs_yellow, function(p) {
+  Sys.sleep(1)
+  analize_emotion(p, model_mental_health, api_token)
+})
+# To the Lighthouse
+results_emoroberta_lighthouse <- lapply(paragraphs_lighthouse, function(p) {
+  Sys.sleep(1)
+  analize_emotion(p, model_mental_health, api_token)
+})
+# Sons and Lovers
+block_size_sons <- 50  # In this case, we may use blocks, since the books are too long
+total_blocks_sons <- ceiling(length(paragraphs_sons) / block_size_sons)
 
+for (i in 1:total_blocks_sons) {
+  message("🔄 Procesando bloque ", i, " de ", total_blocks_sons)
+  
+  start <- (i - 1) * block_size_sons + 1
+  end <- min(i * block_size_sons, length(paragraphs_sons))
+  block_sons <- paragraphs_sons[start:end]
+  
+  # Analyze each paragraph
+  block_results <- lapply(block_sons, function(p) {
+    Sys.sleep(1)  # time in between calls
+    tryCatch({
+      analize_emotion(p, model_mental_health, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con un párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+  
+  # Save the results
+  saveRDS(block_results, paste0("results_depression_sons_block_", i, ".rds"))
+}
+        
+# The sun also rises
+block_size_sun <- 50  
+total_blocks_sun <- ceiling(length(paragraphs_sun) / block_size_sun)
+
+for (i in 1:total_blocks_sun) {
+  message("🔄 Procesando bloque ", i, " de ", total_blocks_sun)
+  
+  start <- (i - 1) * block_size_sun + 1
+  end <- min(i * block_size_sun, length(paragraphs_sun))
+  block_sun <- paragraphs_sun[start:end]
+  
+  block_results_sun_depression <- lapply(block_sun, function(p) {
+    Sys.sleep(1)  
+    tryCatch({
+      analize_emotion(p, model_mental_health, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con un párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+  
+  # Save the results
+  saveRDS(block_results_sun_depression, paste0("results_depression_sun_block_", i, ".rds"))
+}
+        
+# The sound and the fury
+block_size_fury <- 30  
+total_blocks_fury <- ceiling(length(paragraphs_sound) / block_size_fury)
+
+for (i in 1:total_blocks_fury) {
+  message("🔄 Procesando bloque ", i, " de ", total_blocks_fury)
+  
+  start <- (i - 1) * block_size_fury + 1
+  end <- min(i * block_size_fury, length(paragraphs_sound))
+  block_fury <- paragraphs_sound[start:end]
+  
+  block_results <- lapply(block_fury, function(p) {
+    Sys.sleep(2)  # tiempo entre llamadas
+    tryCatch({
+      analize_emotion(p, model_mental_health, api_token)
+    }, error = function(e) {
+      message("⚠️ Error con un párrafo: ", e$message)
+      return(NULL)
+    })
+  })
+  
+  # Save the results
+  saveRDS(block_results, paste0("results_depression_fury_block_", i, ".rds"))
+}
+
+        
 # And then save the results:
+# The Bell Jar
+saveRDS(results_emoroberta_lighthouse, "results_emoroberta_lighthouse.rds")
 
-# Or you may directly load the results
+# The Yellow Wallpaper
+saveRDS(results_emoroberta_yellow, "results_emoroberta_yellow.rds")
+
+# To the Lighthouse
+saveRDS(results_emoroberta_lighthouse, "results_emoroberta_lighthouse.rds")
+        
+# Or you may directly load the results!
 
 # The Bell Jar
 results_mental_health_belljar <- readRDS("results_emoroberta_belljar.rds")
