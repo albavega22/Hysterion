@@ -16,6 +16,6 @@ By using the files in Hysterion, you will be able to study the following novels:
 - The Sun Also Rises, by Hemingway
 - The Sound and the Fury, by Faulkner
 
-But you can use the codes and functions to analyse any model you want! You will only need the .txt of each of the books and your own Hugging Face API token. 
+But you can use the codes and functions to analyse any model you want! You will only need the .txt of each of the books and **your own Hugging Face API token** (remember this, it is REALLY important if you want to replicate my work!). 
 With Hysterion, preliminary conclusions were found. Models like NRC or Hugging Face do not detect correctly either anxiety or depression, but they work especially badly in novels written by women. Nevertheless, so many other findings are waiting to be... Well: found! 
 Enjoy Hysterion!
